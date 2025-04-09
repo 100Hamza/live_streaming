@@ -21,49 +21,46 @@ class LivePage extends StatelessWidget {
         appID: 2010646916,
         // Fill in the appID that you get from ZEGOCLOUD Admin Console.
         appSign:
-            'ba44c185e98f34cd3513e1b5037d5a7a3d57a1957d53d7fff4ba4cfa1a139da6',
+            'appSign',
         // Fill in the appSign that you get from ZEGOCLOUD Admin Console.
         userID: userId,
         userName: 'user_name_$userId',
         liveID: liveID,
         events: ZegoUIKitPrebuiltLiveStreamingEvents(
-            topMenuBar: ZegoLiveStreamingTopMenuBarEvents(
-              onHostAvatarClicked: (ZegoUIKitUser host) {
-                // showHostInfomation(host);
-              },
-            ),
+          topMenuBar: ZegoLiveStreamingTopMenuBarEvents(
+            onHostAvatarClicked: (ZegoUIKitUser host) {
+              // showHostInfomation(host);
+            },
+          ),
           onStateUpdated: (state) {
             debugPrint('+++++++++++state: $state');
           },
+
           // onEnded: (event, defaultAction) {
-          //   Navigator.of(context).pop(); // 🚀 Closes the live streaming screen
+          //   Navigator.of(context).pop();
           //   debugPrint('+========event: $event');
           // },
-
           coHost: ZegoLiveStreamingCoHostEvents(
             onUpdated: (coHosts) {
-              debugPrint(
-                'coHosts: $coHosts'
-              );
+              debugPrint('coHosts: $coHosts');
             },
             audience: ZegoLiveStreamingCoHostAudienceEvents(
-
               onRequestSent: () {
                 debugPrint('Request sent');
-            },),
-              onMaxCountReached: (count){
-                debugPrint('onMaxCountReached:$count');
-              }
+              },
+            ),
+            onMaxCountReached: (count) {
+              debugPrint('onMaxCountReached:$count');
+            },
           ),
 
-
           onEnded: (
-              ZegoLiveStreamingEndEvent event,
-              VoidCallback defaultAction,
-              ) {
+            ZegoLiveStreamingEndEvent event,
+            VoidCallback defaultAction,
+          ) {
             if (ZegoLiveStreamingEndReason.hostEnd == event.reason) {
               if (event.isFromMinimizing) {
-                /// now is minimizing state, not need to navigate, just switch to idle
+                /// now is minimizing state, no need to navigate, just switch to idle
                 ZegoUIKitPrebuiltLiveStreamingController().minimize.hide();
               } else {
                 Navigator.pop(context);
@@ -72,7 +69,6 @@ class LivePage extends StatelessWidget {
               defaultAction.call();
             }
           },
-
 
           onLeaveConfirmation: (
             ZegoLiveStreamingLeaveConfirmationEvent event,
@@ -127,11 +123,10 @@ class LivePage extends StatelessWidget {
                         const SizedBox(height: 24),
                         // Space between text and buttons
 
-                        // 🔘 Buttons Row (Cancel & Exit)
+                        // Buttons Row (Cancel & Exit)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            // ❌ Cancel Button
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -150,7 +145,7 @@ class LivePage extends StatelessWidget {
                               ),
                             ),
 
-                            // ✅ Exit Button
+                            // Exit Button
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.redAccent,
@@ -189,10 +184,10 @@ class LivePage extends StatelessWidget {
         config:
             (isHost
                   ? ZegoUIKitPrebuiltLiveStreamingConfig.host(
-              plugins: [ZegoUIKitSignalingPlugin()],
+                    plugins: [ZegoUIKitSignalingPlugin()],
                   )
                   : ZegoUIKitPrebuiltLiveStreamingConfig.audience(
-              plugins: [ZegoUIKitSignalingPlugin()],
+                    plugins: [ZegoUIKitSignalingPlugin()],
                   ))
               // ..audioVideoView.foregroundBuilder = foregroundBuilder
               // ..foreground = Stack(
@@ -209,7 +204,7 @@ class LivePage extends StatelessWidget {
               ..coHost.inviteTimeoutSecond = 10
               ..coHost.maxCoHostCount = 2
               ..coHost.disableCoHostInvitationReceivedDialog = false
-              ..innerText.startLiveStreamingButton = 'Star Live'
+              ..innerText.startLiveStreamingButton = 'Start Live'
               ..innerText.noHostOnline = 'No host online',
       ),
     );
