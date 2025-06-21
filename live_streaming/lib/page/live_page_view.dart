@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:zego_uikit_prebuilt_live_streaming/zego_uikit_prebuilt_live_streaming.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
-class LivePage extends StatelessWidget {
+class LivePage extends StatefulWidget {
   final String liveID;
   final bool isHost;
   final String userId;
@@ -15,17 +15,48 @@ class LivePage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<LivePage> createState() => _LivePageState();
+}
+
+class _LivePageState extends State<LivePage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    ZegoUIKitPrebuiltLiveStreamingController()
+        .coHost
+        .hostNotifier
+        .addListener(onHostUpdated);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    ZegoUIKitPrebuiltLiveStreamingController()
+        .coHost
+        .hostNotifier
+        .removeListener(onHostUpdated);
+  }
+
+  void onHostUpdated() {
+    debugPrint(
+        'host update:${ZegoUIKitPrebuiltLiveStreamingController().coHost.hostNotifier.value}');
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ZegoUIKitPrebuiltLiveStreaming(
         appID: 2010646916,
         // Fill in the appID that you get from ZEGOCLOUD Admin Console.
         appSign:
-            'appSign',
+            'ba44c185e98f34cd3513e1b5037d5a7a3d57a1957d53d7fff4ba4cfa1a139da6',
         // Fill in the appSign that you get from ZEGOCLOUD Admin Console.
-        userID: userId,
-        userName: 'user_name_$userId',
-        liveID: liveID,
+        userID: widget.userId,
+        userName: 'user_name_${widget.userId}',
+        liveID: widget.liveID,
         events: ZegoUIKitPrebuiltLiveStreamingEvents(
           topMenuBar: ZegoLiveStreamingTopMenuBarEvents(
             onHostAvatarClicked: (ZegoUIKitUser host) {
@@ -37,7 +68,7 @@ class LivePage extends StatelessWidget {
           },
 
           // onEnded: (event, defaultAction) {
-          //   Navigator.of(context).pop();
+          //   Navigator.of(context).pop(); // 🚀 Closes the live streaming screen
           //   debugPrint('+========event: $event');
           // },
           coHost: ZegoLiveStreamingCoHostEvents(
@@ -60,7 +91,7 @@ class LivePage extends StatelessWidget {
           ) {
             if (ZegoLiveStreamingEndReason.hostEnd == event.reason) {
               if (event.isFromMinimizing) {
-                /// now is minimizing state, no need to navigate, just switch to idle
+                /// now is minimizing state, not need to navigate, just switch to idle
                 ZegoUIKitPrebuiltLiveStreamingController().minimize.hide();
               } else {
                 Navigator.pop(context);
@@ -123,10 +154,11 @@ class LivePage extends StatelessWidget {
                         const SizedBox(height: 24),
                         // Space between text and buttons
 
-                        // Buttons Row (Cancel & Exit)
+                        // 🔘 Buttons Row (Cancel & Exit)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            // ❌ Cancel Button
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.white,
@@ -145,7 +177,7 @@ class LivePage extends StatelessWidget {
                               ),
                             ),
 
-                            // Exit Button
+                            // ✅ Exit Button
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.redAccent,
@@ -172,7 +204,7 @@ class LivePage extends StatelessWidget {
               },
             );
 
-            if (shouldExit == true && !isHost) {
+            if (shouldExit == true && !widget.isHost) {
               shouldExit = false;
               Navigator.of(context).pop();
             }
@@ -182,7 +214,7 @@ class LivePage extends StatelessWidget {
         ),
 
         config:
-            (isHost
+            (widget.isHost
                   ? ZegoUIKitPrebuiltLiveStreamingConfig.host(
                     plugins: [ZegoUIKitSignalingPlugin()],
                   )

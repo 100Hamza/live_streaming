@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         return Stack(
           children: [
             child!,
+            ///  Step 3/3: Insert ZegoUIKitPrebuiltLiveStreamingMiniOverlayPage into Overlay, and return the context of NavigatorState in contextQuery.
             ZegoUIKitPrebuiltLiveStreamingMiniOverlayPage(
               contextQuery: () {
                 return navigatorKey.currentState!.context;
